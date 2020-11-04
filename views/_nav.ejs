@@ -1,0 +1,279 @@
+<style>
+    body {
+        padding-top: 75px;
+        position: relative;
+    }
+
+    .snow-img {
+        position: fixed;
+        top: 0;
+        z-index: 9999;
+    }
+
+    .row {
+        margin: 0;
+    }
+
+    .navbar {
+        width: 100%;
+        height: 75px;
+        margin: 0;
+        background: #fff;
+        box-shadow: 0 0 10px rgb(226, 226, 226);
+        transition: all 0.5s;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 99;
+    }
+
+    .navbar:hover {
+        box-shadow: 0 0 10px rgb(190, 190, 190);
+    }
+
+    .web-logo {
+        width: 220px;
+        height: auto;
+    }
+
+    .nav-list {
+        height: 75px;
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-item:nth-child(1) a:link::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-home.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(1) a:hover::before,
+    .nav-item:nth-child(1) a:active::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-home-active.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(1) a.my-active::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-home-active.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(2) a:link::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-arc.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(2) a:hover::before,
+    .nav-item:nth-child(2) a:active::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-arc-active.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(2) a.my-active::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-arc-active.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(3) a:link::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-resume.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(3) a:hover::before,
+    .nav-item:nth-child(3) a:active::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-resume-active.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-item:nth-child(3) a.my-active::before {
+        content: '';
+        display: block;
+        clear: both;
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        background: url(/assets/images/icon-resume-active.png);
+        background-size: 100% 100%;
+    }
+
+    .nav-a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: #666;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .nav-a:hover {
+        color: #93C262;
+        text-decoration: none;
+    }
+
+    .my-active {
+        color: #93C262;
+        text-decoration: underline;
+    }
+
+    .stopAnimationBox {
+        width: 125px;
+        height: auto;
+        position: fixed;
+        top: 5px;
+        right: 20px;
+        cursor: pointer;
+        z-index: 999;
+    }
+
+    .stopAnimationBox:hover {
+        width: 128px;
+        transition: all 0.5s;
+    }
+
+    .stopAnimationBox img {
+        width: 100%;
+        height: auto;
+    }
+
+    @media screen and (max-width: 767px) {
+        .navbar {
+            height: 150px;
+        }
+
+        body {
+            padding-top: 150px;
+        }
+
+        .nav-list {
+            justify-content: space-around;
+        }
+
+        .nav-a {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+</style>
+<script src="../assets/js/jquery.min.js"></script>
+<nav class="navbar row">
+    <div class="nav-log-box col-sm-3">
+        <a href="/">
+            <img class="web-logo" src="/assets/images/nav-logo.png" />
+        </a>
+    </div>
+    <div class="nav-list col-sm-9">
+        <div class="nav-item">
+            <a class="nav-a <%= url == 'index' ? 'my-active' : ''%>" href="/">首页</a>
+        </div>
+        <div class="nav-item">
+            <a class="nav-a <%= url == 'blog' ? 'my-active' : ''%>" href="/blog">笔记</a>
+        </div>
+        <div class="nav-item">
+            <a class="nav-a <%= url == 'resume' ? 'my-active' : ''%>" href="/resume">在线简历</a>
+        </div>
+    </div>
+</nav>
+<div class="stopAnimationBox">
+    <img class="btn-img" src="/assets/images/btn-on.png">
+</div>
+<script type="text/javascript">
+    let animateSwitch = false;
+    let imgNames = ['a-flower', 'a-leaf', 'a-star', 'a-maple-leaf', 'a-snow', 'a-moon', 'a-watermelon', 'a-sun'];
+    let length = imgNames.length;
+    let inx = 0;
+    let timer = null;
+
+    // 页面关闭或打开动画
+    $('.stopAnimationBox').click(function () {
+        animateSwitch = !animateSwitch;
+        if (animateSwitch) {
+            startAnimate();
+        } else {
+            stopAnimation();
+        }
+    })
+
+    // 页面切换前关闭动画（关闭计时器，移除动画元素）
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            stopAnimation();
+        }
+    })
+
+    function startAnimate() {
+        inx = 0;
+        timer = setInterval(function () {
+            let img = $(`<img class='snow-img' src='/assets/images/${imgNames[inx++ % length]}.png'>`);
+            $("body").append(img);
+            let size = parseInt(Math.random() * 15) + 25;
+            img.css("filter", "opacity(85%)");
+            img.css("width", size + "px");
+            let width = $(window).width();
+            let left = parseInt(Math.random() * (width - size));
+            img.css("left", left + "px");
+            let top = $(window).height() - size;
+            img.animate({ "top": top + "px", "left": (left + parseInt(Math.random() * 200) - 100) + "px" }, size * 200).fadeOut(500, function () {
+                img.remove();
+            });
+        }, 800)
+        $('.btn-img').attr('src', '/assets/images/btn-off.png');
+    }
+
+
+
+    function stopAnimation() {
+        $('.snow-img').remove();
+        clearInterval(timer);
+        timer = null;
+        $('.btn-img').attr('src', '/assets/images/btn-on.png');
+    }
+</script>
