@@ -118,7 +118,7 @@
 
     .module-title {
       font-size: 16px;
-      color:#666;
+      color: #666;
     }
 
     .list-group {
@@ -186,8 +186,24 @@
       align-items: center;
       justify-content: space-between;
     }
-    .pagination li{
+
+    .pagination li {
       cursor: pointer;
+    }
+
+    .pagination>.active>a,
+    .pagination>.active>a:focus,
+    .pagination>.active>a:hover,
+    .pagination>.active>span,
+    .pagination>.active>span:focus,
+    .pagination>.active>span:hover {
+      background-color: #666666;
+      border-color: #666666;
+    }
+
+    .pagination>li>a,
+    .pagination>li>span {
+      color: #666666;
     }
   </style>
 </head>
@@ -290,11 +306,11 @@
       }
       return (false);
     }
-    function getPageUrl(){
-      let classify =  getQueryVariable("classify");
-      if(classify){
+    function getPageUrl() {
+      let classify = getQueryVariable("classify");
+      if (classify) {
         return '/blog?classify=' + classify + '&page='
-      }else{
+      } else {
         return '/blog?page='
       }
     }
