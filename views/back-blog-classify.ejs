@@ -16,8 +16,8 @@
 
     #ue_err {
         color: red;
-        margin-top: 6px;
-        padding: 0 30px;
+        margin-top: 6px !important;
+        padding: 0 30px !important;
 
     }
 </style>
@@ -28,6 +28,7 @@
                 <tr>
                     <th> 分类名称 </th>
                     <th> 排序基数 </th>
+                    <th title="有效指 未被删除且已发布的文章"> 有效文章数 </th>
                     <th> 添加时间 </th>
                     <th> 操作 </th>
                 </tr>
@@ -38,10 +39,11 @@
                 <tr>
                     <td> <%= item.classify %> </td>
                     <td> <%= item.order %> </td>
+                    <td> <%= item.publishtotal %> </td>
                     <td> <%= dateFormat(item.createtime) %> </td>
                     <td>
                         <button type="button" class="updateBtn btn btn-info btn-sm" data-id="<%= item._id %>"
-                            data-classify="<%= item.classify %>" data-order="<%= item.order %>">修改</button>
+                            data-classify="<%= item.classify %>" data-order="<%= item.order %>" data-publishtotal="<%= item.publishtotal %>">修改</button>
                         <button type="button" class="deleteClassify btn btn-danger btn-sm"
                             data-id="<%= item._id %>">删除</button>
                     </td>
@@ -74,6 +76,10 @@
                 <label for="order"></label>
                 <input type="number" id="order" name="order" class="form-control" placeholder="请输入分类排序基数，数值越小排名越靠前">
             </div>
+            <div class="input-group">
+              <label for="order"></label>
+              <input type="number" id="publishtotal" name="publishtotal" class="form-control" placeholder="请修正发布文章数量">
+          </div>
             <input type="text" id="id_" name="id_" style="display: none" class="form-control">
             <!-- 提交状态提示 -->
             <p id="ue_err"></p>
@@ -94,20 +100,24 @@
         $("#id_").val('');
         $('#classify').val('');
         $('#order').val('');
+        $('#publishtotal').val('');
         $('#myModal').modal('show');
     })
     $(".updateBtn").click(function () {
         let id = $(this).data("id");
         let classify = $(this).data("classify");
         let order = $(this).data("order");
+        let publishtotal = $(this).data("publishtotal");
         $("#id_").val(id);
         $('#classify').val(classify);
         $('#order').val(order);
+        $('#publishtotal').val(publishtotal);
         $('#myModal').modal('show');
     })
     $('#saveClassify').click(function () {
         let classify = $("#classify").val();
         let order = $("#order").val();
+        let publishtotal = $("#publishtotal").val() || 0;
         if (classify) {
             $("#ue_err").html("");
         } else {
@@ -126,6 +136,7 @@
         param.append('id', id);
         param.append('classify', classify);
         param.append('order', order);
+        param.append('publishtotal', publishtotal);
         axios.post('/saveClassify', param, {
             headers: { 'Content-Type': 'multipart/form-data' }
         }).then(function (res) {

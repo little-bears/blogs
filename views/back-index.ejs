@@ -34,7 +34,7 @@
           <% if(data.list && data.list.length > 0) {%>
           <% data.list.forEach(function(item,index){%>
           <tr>
-            <td class="title-td"> <a href="/detail/<%= item._id %>"><%= item.title %></a> </td>
+            <td class="title-td" title="<%= item.title %>"> <a href="/detail/<%= item._id %>"><%= item.title %></a> </td>
             <td> <%= YMDFormat(item.createtime) %> </td>
             <td> <%= item.ispublish == true ? '发布' : '暂未发布' %> </td>
           </tr>

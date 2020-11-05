@@ -107,8 +107,10 @@ exports.showBlog = function (req, res, next) {
     if (err) {
       res.send(err);
     } else {
+      let allPulishCount = 0;
       classify.forEach(function (item) {
-        classifyMap[item._id] = item.classify
+        classifyMap[item._id] = item.classify;
+        allPulishCount += item.publishtotal;
       })
       let where = {
         ispublish: true,
@@ -138,7 +140,8 @@ exports.showBlog = function (req, res, next) {
                 classifyMap,
                 currentId: req.query.classify,
                 pageTotal: 0,
-                currentPage: 0
+                currentPage: 0,
+                allPulishCount
               }
             })
           } else {
@@ -156,7 +159,8 @@ exports.showBlog = function (req, res, next) {
                     classifyMap,
                     currentId: req.query.classify,
                     pageTotal,
-                    currentPage
+                    currentPage,
+                    allPulishCount
                   }
                 })
               }
@@ -169,7 +173,7 @@ exports.showBlog = function (req, res, next) {
 }
 // (3) 渲染笔记详情页
 exports.getDetail = function (req, res, next) {
-  if(req.params.id && req.params.id.length != 24){
+  if (req.params.id && req.params.id.length != 24) {
     res.render("detail", {
       data: {
         currentUrl: 'detail',
@@ -191,8 +195,8 @@ exports.getDetail = function (req, res, next) {
             classify
           }).sort({
             updatetime: -1
-          }).limit(8).exec(function(err, list){
-            if(err){
+          }).limit(8).exec(function (err, list) {
+            if (err) {
               res.send(err)
             } else {
               res.render("detail", {
@@ -330,7 +334,8 @@ exports.showBlogList = function (req, res, next) {
             })
           } else {
             Blog.find(where).skip((currentPage - 1) * pageSize).limit(pageSize).sort({
-              createtime: -1
+              ispublish: 1,
+              createtime: -1,
             }).exec(function (err, docs) {
               if (err) {
                 res.send(err);
@@ -466,7 +471,8 @@ exports.saveClassify = function (req, res, next) {
     }, {
       $set: {
         classify: req.body.classify,
-        order: req.body.order
+        order: req.body.order,
+        publishtotal: req.body.publishtotal
       }
     }, function (err, docs) {
       if (err) {
@@ -497,7 +503,8 @@ exports.saveClassify = function (req, res, next) {
         } else {
           Classify.create({
             classify: req.body.classify,
-            order: req.body.order
+            order: req.body.order,
+            publishtotal: req.body.publishtotal
           }, function (err, docs) {
             if (err) {
               res.send({
@@ -554,27 +561,57 @@ exports.deleteClassify = function (req, res, next) {
 exports.saveBlog = function (req, res, next) {
   let id = req.body.id;
   if (id) { // 修改笔记
-    Blog.updateOne({
-      _id: mongoose.Types.ObjectId(id)
-    }, {
-      $set: {
-        title: req.body.title,
-        classify: req.body.classify,
-        ispublish: req.body.ispublish,
-        isdelete: req.body.isdelete,
-        content: req.body.content
-      }
-    }, function (err, docs) {
+    Blog.find({ _id: mongoose.Types.ObjectId(id) }).exec(function (err, docs) {
       if (err) {
-        res.send({
-          code: 1,
-          msg: "修改失败"
-        });
+        res.send(err)
       } else {
-        res.send({
-          code: 0,
-          msg: "修改成功"
-        });
+        let originDoc = docs[0];
+        Blog.updateOne({
+          _id: mongoose.Types.ObjectId(id)
+        }, {
+          $set: {
+            title: req.body.title,
+            classify: req.body.classify,
+            ispublish: req.body.ispublish,
+            isdelete: req.body.isdelete,
+            content: req.body.content
+          }
+        }, function (err, docs) {
+          if (err) {
+            res.send({
+              code: 1,
+              msg: "修改失败"
+            });
+          } else {
+            res.send({
+              code: 0,
+              msg: "修改成功"
+            });
+          }
+        })
+        if (JSON.parse(originDoc.ispublish) != JSON.parse(req.body.ispublish)) { // 发布状态发生变化
+          if (JSON.parse(req.body.ispublish)) { // 未发布->发布
+            Classify.updateOne({
+              _id: mongoose.Types.ObjectId(req.body.classify)
+            }, {
+              $inc: {
+                publishtotal: 1
+              }
+            }).exec(function (err, result) {
+              console.log(result)
+            })
+          } else { // 发布->未发布
+            Classify.updateOne({
+              _id: mongoose.Types.ObjectId(req.body.classify)
+            }, {
+              $inc: {
+                publishtotal: -1
+              }
+            }).exec(function (err, result) {
+              console.log(result)
+            })
+          }
+        }
       }
     })
   } else { // 添加笔记
@@ -597,29 +634,59 @@ exports.saveBlog = function (req, res, next) {
         });
       }
     });
+    if (JSON.parse(req.body.ispublish)) { //发布博客，更新该分类文章发布数量
+      Classify.updateOne({
+        _id: mongoose.Types.ObjectId(req.body.classify)
+      }, {
+        $inc: {
+          publishtotal: 1
+        }
+      }).exec(function (err, result) {
+        console.log(result)
+      })
+    }
   }
 }
 // (4) 删除笔记 - 标记删除
 exports.deleteBlog = function (req, res, next) {
-  Blog.updateOne({
-    _id: mongoose.Types.ObjectId(req.body.id)
-  }, {
-    $set: {
-      isdelete: true
-    }
-  }, function (err) {
-    if (err) {
-      res.send({
-        code: 1,
-        msg: "删除失败"
+  let id = req.body.id;
+  Blog.find({ _id: mongoose.Types.ObjectId(id) }).exec(function(err, docs){
+    if(err){
+      res.send(err)
+    }else{
+      let originDoc = docs[0];
+      Blog.updateOne({
+        _id: mongoose.Types.ObjectId(id)
+      }, {
+        $set: {
+          isdelete: true
+        }
+      }, function (err) {
+        if (err) {
+          res.send({
+            code: 1,
+            msg: "删除失败"
+          });
+        } else {
+          res.send({
+            code: 0,
+            msg: "删除成功"
+          });
+        }
       });
-    } else {
-      res.send({
-        code: 0,
-        msg: "删除成功"
-      });
+      if(JSON.parse(originDoc.ispublish)){ // 删除发布状态的文章，更新该分类文章的发布数量
+        Classify.updateOne({
+          _id: mongoose.Types.ObjectId(originDoc.classify)
+        }, {
+          $inc: {
+            publishtotal: -1
+          }
+        }).exec(function (err, result) {
+          console.log(result)
+        })
+      }
     }
-  });
+  })
 }
 // (5) 后台登录
 exports.AdminLogin = function (req, res, next) {
@@ -654,25 +721,44 @@ exports.AdminLogin = function (req, res, next) {
 }
 // (6) 恢复笔记
 exports.recoverBlog = function (req, res, next) {
-  Blog.updateOne({
-    _id: mongoose.Types.ObjectId(req.body.id)
-  }, {
-    $set: {
-      isdelete: false
-    }
-  }, function (err) {
-    if (err) {
-      res.send({
-        code: 1,
-        msg: "恢复失败"
+  let id = req.body.id;
+  Blog.find({ _id: mongoose.Types.ObjectId(id) }).exec(function(err, docs){
+    if(err){
+      res.send(err)
+    }else{
+      let originDoc = docs[0];
+      Blog.updateOne({
+        _id: mongoose.Types.ObjectId(id)
+      }, {
+        $set: {
+          isdelete: false
+        }
+      }, function (err) {
+        if (err) {
+          res.send({
+            code: 1,
+            msg: "恢复失败"
+          });
+        } else {
+          res.send({
+            code: 0,
+            msg: "恢复成功"
+          });
+        }
       });
-    } else {
-      res.send({
-        code: 0,
-        msg: "恢复成功"
-      });
+      if(JSON.parse(originDoc.ispublish)){ // 恢复发布状态的文章，更新该分类文章的发布数量
+        Classify.updateOne({
+          _id: mongoose.Types.ObjectId(originDoc.classify)
+        }, {
+          $inc: {
+            publishtotal: 1
+          }
+        }).exec(function (err, result) {
+          console.log(result)
+        })
+      }
     }
-  });
+  })
 }
 // (7) 删除笔记 - 永久删除
 exports.destroyBlog = function (req, res, next) {

@@ -42,7 +42,9 @@
     .content {
       padding: 30px;
       border-radius: 10px;
+      background: rgba(255, 255, 255, 0.5);
       border: 1px solid #d1d1d1;
+      margin-bottom: 20px;
     }
 
     /* 图片超过盒子宽度时自适应 */
@@ -63,12 +65,6 @@
       padding: 0 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px #d1d1d1;
-      margin-top: 10px;
-      /* display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center; */
-      margin-top: 20px;
       transition: all 0.5s;
     }
 
@@ -78,9 +74,9 @@
 
     .module-box {
       width: 100%;
-      height: 50px;
+      height: auto;
       box-sizing: border-box;
-      padding: 0 20px;
+      padding: 20px 10px 10px 10px;
       display: flex;
       justify-content: flex-start;
       align-items: center;
@@ -88,19 +84,19 @@
 
     .module-icon {
       width: 20px;
-      height: 20px;
+      height: auto;
       margin-right: 10px;
     }
 
     .module-title {
       font-size: 16px;
-      columns: #666;
+      color: #333;
       margin-bottom: 0;
     }
 
     .arc-list {
       box-sizing: border-box;
-      padding: 0 20px 20px 20px;
+      padding: 0 10px 20px 10px;
     }
 
     .my-clock {
@@ -127,6 +123,23 @@
       font-size: 14px;
       color: #333;
       margin-bottom: 20px;
+    }
+
+    .list-item {
+      width: 98%;
+      height: auto;
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: #333;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-decoration: underline;
+    }
+
+    .list-item:hover {
+      color: #333;
     }
 
     @media screen and (max-width: 992px) {
@@ -156,15 +169,15 @@
     <div class="aside col-md-3">
       <div class="recommend-article">
         <div class="module-box">
-          <img class="module-icon" src="/assets/images/icon-classify.png" />
-          <p class="module-title">推荐文章</p>
+          <img class="module-icon" src="/assets/images/icon-xianguan.png" />
+          <p class="module-title">相关笔记</p>
         </div>
         <div class="arc-list">
           <% if(data.list && data.list.length > 1) {%>
           <% data.list.forEach(function(item,index){%>
-            <% if(data.article.title != item.title) { %>
-              <p><a href="/detail/<%= item._id %>"><%= item.title %></a></p>
-            <% } %>
+          <% if(data.article.title != item.title) { %>
+          <a class="list-item" href="/detail/<%= item._id %>"><%= item.title %></a>
+          <% } %>
           <% }) %>
           <% }else{ %>
           <p>暂无推荐</p>
