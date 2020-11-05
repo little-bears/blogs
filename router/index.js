@@ -185,7 +185,11 @@ exports.getDetail = function (req, res, next) {
       } else {
         if (docs.length > 0) {
           let classify = docs[0].classify;
-          Blog.find({classify}).sort({
+          Blog.find({
+            ispublish: true,
+            isdelete: false,
+            classify
+          }).sort({
             updatetime: -1
           }).limit(8).exec(function(err, list){
             if(err){
