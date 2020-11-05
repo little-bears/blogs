@@ -162,7 +162,9 @@
         <div class="arc-list">
           <% if(data.list && data.list.length > 1) {%>
           <% data.list.forEach(function(item,index){%>
-          <p><a href="/detail/<%= item._id %>"><%= item.title %></a></p>
+            <% if(data.article.title != item.title) { %>
+              <p><a href="/detail/<%= item._id %>"><%= item.title %></a></p>
+            <% } %>
           <% }) %>
           <% }else{ %>
           <p>暂无推荐</p>
