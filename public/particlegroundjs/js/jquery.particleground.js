@@ -49,10 +49,7 @@
     var pointerY;
     var tiltY = 0;
     var paused = false;
-    console.log(options)
-    console.log(window[pluginName].defaults)
     options = extend({}, window[pluginName].defaults, options);
-    console.log(options)
 
     /**
      * Init
@@ -381,13 +378,13 @@
     maxSpeedY: 0.7,
     directionX: 'center', // 'center', 'left' or 'right'. 'center' = dots bounce off edges
     directionY: 'center', // 'center', 'up' or 'down'. 'center' = dots bounce off edges
-    density: 12000, // How many particles will be generated: one particle every n pixels
+    density: 10000, // How many particles will be generated: one particle every n pixels
     dotColor: '#666666',
     lineColor: '#666666',
-    particleRadius: 9, // Dot size
+    particleRadius: 6, // Dot size
     lineWidth: 1,
     curvedLines: false,
-    proximity: 110, // How close two dots need to be before they join
+    proximity: 100, // How close two dots need to be before they join
     parallax: true,
     parallaxMultiplier: 5, // The lower the number, the more extreme the parallax effect
     onInit: function() {},

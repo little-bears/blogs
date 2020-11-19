@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>个人简历</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/turnjs4/extras/modernizr.2.5.3.min.js"></script>
+  <script type="text/javascript" src="/turnjs4/lib/hash.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+    </script>
+  <style>
+    #canvas {
+      position: relative;
+    }
+
+    .btn-group {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      z-index: 50;
+    }
+
+    .btn-group img {
+      width: 30px;
+      height: 30px;
+      padding: 2px;
+      background: #ffffff;
+      margin-right: 20px;
+      border-radius: 2px;
+      box-shadow: 0 0 10px #666666;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('./_nav.ejs', {url: data.currentUrl}) -%>
+  <div id="canvas">
+    <div class="btn-group">
+      <a title="多页样式" href="/resume?type=book">
+        <img src="/assets/images/icon-book.png">
+      </a>
+      <a title="单页样式" href="/resume?type=paper">
+        <img src="/assets/images/icon-paper.png">
+      </a>
+    </div>
+    <div class="zoom-icon zoom-icon-in"></div>
+    <div class="magazine-viewport" style="height: 580px !important;">
+      <div class="container">
+        <div class="magazine">
+          <div ignore="1" class="next-button"></div>
+          <div ignore="1" class="previous-button"></div>
+        </div>
+      </div>
+    </div>
+    <div class="thumbnails">
+      <div>
+        <ul>
+          <li class="i">
+            <img src="/turnjs4/samples/magazine/pages/1-thumb.jpg" width="76" height="100" class="page-1">
+            <span>1</span>
+          </li>
+          <li class="d">
+            <img src="/turnjs4/samples/magazine/pages/2-thumb.jpg" width="76" height="100" class="page-2">
+            <img src="/turnjs4/samples/magazine/pages/3-thumb.jpg" width="76" height="100" class="page-3">
+            <span>2-3</span>
+          </li>
+          <li class="d">
+            <img src="/turnjs4/samples/magazine/pages/4-thumb.jpg" width="76" height="100" class="page-4">
+            <img src="/turnjs4/samples/magazine/pages/5-thumb.jpg" width="76" height="100" class="page-5">
+            <span>4-5</span>
+          </li>
+          <li class="d">
+            <img src="/turnjs4/samples/magazine/pages/6-thumb.jpg" width="76" height="100" class="page-6">
+            <img src="/turnjs4/samples/magazine/pages/7-thumb.jpg" width="76" height="100" class="page-7">
+            <span>6-7</span>
+          </li>
+          <li class="d">
+            <img src="/turnjs4/samples/magazine/pages/8-thumb.jpg" width="76" height="100" class="page-8">
+            <img src="/turnjs4/samples/magazine/pages/9-thumb.jpg" width="76" height="100" class="page-9">
+            <span>8-9</span>
+          </li>
+          <li class="d">
+            <img src="/turnjs4/samples/magazine/pages/10-thumb.jpg" width="76" height="100" class="page-10">
+            <img src="/turnjs4/samples/magazine/pages/11-thumb.jpg" width="76" height="100" class="page-11">
+            <span>10-11</span>
+          </li>
+          <li class="i">
+            <img src="/turnjs4/samples/magazine/pages/12-thumb.jpg" width="76" height="100" class="page-12">
+            <span>12</span>
+          </li>
+          <ul>
+            <div>
+            </div>
+      </div>
+      <script type="text/javascript">
+        function loadApp() {
+          $('#canvas').fadeIn(1000);
+          var flipbook = $('.magazine');
+          if (flipbook.width() == 0 || flipbook.height() == 0) {
+            setTimeout(loadApp, 10);
+            return;
+          }
+          flipbook.turn({
+            width: 768,
+            height: 500,
+            duration: 1000,
+            acceleration: !isChrome(),
+            gradients: true,
+            autoCenter: true,
+            elevation: 50,
+            pages: 12,
+            when: {
+              turning: function (event, page, view) {
+                var book = $(this),
+                  currentPage = book.turn('page'),
+                  pages = book.turn('pages');
+                Hash.go('page/' + page).update();
+                disableControls(page);
+                $('.thumbnails .page-' + currentPage).
+                  parent().
+                  removeClass('current');
+                $('.thumbnails .page-' + page).
+                  parent().
+                  addClass('current');
+              },
+              turned: function (event, page, view) {
+                disableControls(page);
+                $(this).turn('center');
+                if (page == 1) {
+                  $(this).turn('peel', 'br');
+                }
+              },
+              missing: function (event, pages) {
+                for (var i = 0; i < pages.length; i++)
+                  addPage(pages[i], $(this));
+              }
+            }
+          });
+          $('.magazine-viewport').zoom({
+            flipbook: $('.magazine'),
+            max: function () {
+              return largeMagazineWidth() / $('.magazine').width();
+            },
+            when: {
+              swipeLeft: function () {
+                $(this).zoom('flipbook').turn('next');
+              },
+              swipeRight: function () {
+                $(this).zoom('flipbook').turn('previous');
+              },
+              resize: function (event, scale, page, pageElement) {
+                if (scale == 1)
+                  loadSmallPage(page, pageElement);
+                else
+                  loadLargePage(page, pageElement);
+
+              },
+              zoomIn: function () {
+                $('.thumbnails').hide();
+                $('.made').hide();
+                $('.magazine').removeClass('animated').addClass('zoom-in');
+                $('.zoom-icon').removeClass('zoom-icon-in').addClass('zoom-icon-out');
+                if (!window.escTip && !$.isTouch) {
+                  escTip = true;
+                  $('<div />', { 'class': 'exit-message' }).
+                    html('<div>Press ESC to exit</div>').
+                    appendTo($('body')).
+                    delay(2000).
+                    animate({ opacity: 0 }, 500, function () {
+                      $(this).remove();
+                    });
+                }
+              },
+              zoomOut: function () {
+                $('.exit-message').hide();
+                $('.thumbnails').fadeIn();
+                $('.made').fadeIn();
+                $('.zoom-icon').removeClass('zoom-icon-out').addClass('zoom-icon-in');
+
+                setTimeout(function () {
+                  $('.magazine').addClass('animated').removeClass('zoom-in');
+                  resizeViewport();
+                }, 0);
+
+              }
+            }
+          });
+          if ($.isTouch)
+            $('.magazine-viewport').bind('zoom.doubleTap', zoomTo);
+          else
+            $('.magazine-viewport').bind('zoom.tap', zoomTo);
+          $(document).keydown(function (e) {
+            var previous = 37, next = 39, esc = 27;
+            switch (e.keyCode) {
+              case previous:
+                $('.magazine').turn('previous');
+                e.preventDefault();
+                break;
+              case next:
+                $('.magazine').turn('next');
+                e.preventDefault();
+                break;
+              case esc:
+                $('.magazine-viewport').zoom('zoomOut');
+                e.preventDefault();
+                break;
+            }
+          });
+          Hash.on('^page\/([0-9]*)$', {
+            yep: function (path, parts) {
+              var page = parts[1];
+              if (page !== undefined) {
+                if ($('.magazine').turn('is'))
+                  $('.magazine').turn('page', page);
+              }
+            },
+            nop: function (path) {
+              if ($('.magazine').turn('is'))
+                $('.magazine').turn('page', 1);
+            }
+          });
+          $(window).resize(function () {
+            resizeViewport();
+          }).bind('orientationchange', function () {
+            resizeViewport();
+          });
+          $('.thumbnails').click(function (event) {
+            var page;
+            if (event.target && (page = /page-([0-9]+)/.exec($(event.target).attr('class')))) {
+              $('.magazine').turn('page', page[1]);
+            }
+          });
+          $('.thumbnails li').
+            bind($.mouseEvents.over, function () {
+              $(this).addClass('thumb-hover');
+            }).bind($.mouseEvents.out, function () {
+              $(this).removeClass('thumb-hover');
+            });
+          if ($.isTouch) {
+            $('.thumbnails').
+              addClass('thumbanils-touch').
+              bind($.mouseEvents.move, function (event) {
+                event.preventDefault();
+              });
+          } else {
+            $('.thumbnails ul').mouseover(function () {
+              $('.thumbnails').addClass('thumbnails-hover');
+            }).mousedown(function () {
+              return false;
+            }).mouseout(function () {
+              $('.thumbnails').removeClass('thumbnails-hover');
+            });
+          }
+          if ($.isTouch) {
+            $('.magazine').bind('touchstart', regionClick);
+          } else {
+            $('.magazine').click(regionClick);
+          }
+          $('.next-button').bind($.mouseEvents.over, function () {
+            $(this).addClass('next-button-hover');
+          }).bind($.mouseEvents.out, function () {
+            $(this).removeClass('next-button-hover');
+          }).bind($.mouseEvents.down, function () {
+            $(this).addClass('next-button-down');
+          }).bind($.mouseEvents.up, function () {
+            $(this).removeClass('next-button-down');
+          }).click(function () {
+            $('.magazine').turn('next');
+          });
+          $('.previous-button').bind($.mouseEvents.over, function () {
+            $(this).addClass('previous-button-hover');
+          }).bind($.mouseEvents.out, function () {
+            $(this).removeClass('previous-button-hover');
+          }).bind($.mouseEvents.down, function () {
+            $(this).addClass('previous-button-down');
+          }).bind($.mouseEvents.up, function () {
+            $(this).removeClass('previous-button-down');
+          }).click(function () {
+            $('.magazine').turn('previous');
+          });
+          resizeViewport();
+          $('.magazine').addClass('animated');
+        }
+        $('.zoom-icon').bind('mouseover', function () {
+          if ($(this).hasClass('zoom-icon-in'))
+            $(this).addClass('zoom-icon-in-hover');
+          if ($(this).hasClass('zoom-icon-out'))
+            $(this).addClass('zoom-icon-out-hover');
+        }).bind('mouseout', function () {
+          if ($(this).hasClass('zoom-icon-in'))
+            $(this).removeClass('zoom-icon-in-hover');
+          if ($(this).hasClass('zoom-icon-out'))
+            $(this).removeClass('zoom-icon-out-hover');
+        }).bind('click', function () {
+          if ($(this).hasClass('zoom-icon-in'))
+            $('.magazine-viewport').zoom('zoomIn');
+          else if ($(this).hasClass('zoom-icon-out'))
+            $('.magazine-viewport').zoom('zoomOut');
+        });
+        $('#canvas').hide();
+        yepnope({
+          test: Modernizr.csstransforms,
+          yep: ['/turnjs4/lib/turn.js'],
+          nope: ['/turnjs4/lib/turn.html4.min.js'],
+          both: ['/turnjs4/lib/zoom.min.js', '/turnjs4/samples/magazine/js/magazine.js', '/turnjs4/samples/magazine/css/magazine.css'],
+          complete: loadApp
+        });
+      </script>
+</body>
+
+</html>

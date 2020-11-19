@@ -9,5 +9,5 @@ document.addEventListener('DOMContentLoaded', function () {
     lineColor: 'rgb(225, 225, 225)'
   });
   var intro = document.getElementById('intro');
-  intro.style.marginTop = - intro.offsetHeight / 2 + 'px';
+  intro && (intro.style.marginTop = - intro.offsetHeight / 2 + 'px');
 }, false);

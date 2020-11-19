@@ -222,11 +222,39 @@ exports.getDetail = function (req, res, next) {
 }
 // (4) 渲染简历页
 exports.showResume = function (req, res, next) {
-  res.render("resume", {
-    data: {
-      currentUrl: 'resume'
+  let type = req.query.type;
+
+  if (type) {
+    if (type == 'book') {
+      res.render("resume-pc", {
+        data: {
+          currentUrl: 'resume'
+        }
+      });
+    } else {
+      res.render("resume-mobile", {
+        data: {
+          currentUrl: 'resume'
+        }
+      });
     }
-  })
+  } else {
+    let deviceAgent = req.headers["user-agent"].toLowerCase();
+    let agentID = deviceAgent.match(/(iphone|ipod|ipad|android)/);
+    if (agentID) { // Mobile
+      res.render("resume-mobile", {
+        data: {
+          currentUrl: 'resume'
+        }
+      });
+    } else { // PC
+      res.render("resume-pc", {
+        data: {
+          currentUrl: 'resume'
+        }
+      });
+    }
+  }
 }
 
 // 2、后端
@@ -650,10 +678,10 @@ exports.saveBlog = function (req, res, next) {
 // (4) 删除笔记 - 标记删除
 exports.deleteBlog = function (req, res, next) {
   let id = req.body.id;
-  Blog.find({ _id: mongoose.Types.ObjectId(id) }).exec(function(err, docs){
-    if(err){
+  Blog.find({ _id: mongoose.Types.ObjectId(id) }).exec(function (err, docs) {
+    if (err) {
       res.send(err)
-    }else{
+    } else {
       let originDoc = docs[0];
       Blog.updateOne({
         _id: mongoose.Types.ObjectId(id)
@@ -674,7 +702,7 @@ exports.deleteBlog = function (req, res, next) {
           });
         }
       });
-      if(JSON.parse(originDoc.ispublish)){ // 删除发布状态的文章，更新该分类文章的发布数量
+      if (JSON.parse(originDoc.ispublish)) { // 删除发布状态的文章，更新该分类文章的发布数量
         Classify.updateOne({
           _id: mongoose.Types.ObjectId(originDoc.classify)
         }, {
@@ -722,10 +750,10 @@ exports.AdminLogin = function (req, res, next) {
 // (6) 恢复笔记
 exports.recoverBlog = function (req, res, next) {
   let id = req.body.id;
-  Blog.find({ _id: mongoose.Types.ObjectId(id) }).exec(function(err, docs){
-    if(err){
+  Blog.find({ _id: mongoose.Types.ObjectId(id) }).exec(function (err, docs) {
+    if (err) {
       res.send(err)
-    }else{
+    } else {
       let originDoc = docs[0];
       Blog.updateOne({
         _id: mongoose.Types.ObjectId(id)
@@ -746,7 +774,7 @@ exports.recoverBlog = function (req, res, next) {
           });
         }
       });
-      if(JSON.parse(originDoc.ispublish)){ // 恢复发布状态的文章，更新该分类文章的发布数量
+      if (JSON.parse(originDoc.ispublish)) { // 恢复发布状态的文章，更新该分类文章的发布数量
         Classify.updateOne({
           _id: mongoose.Types.ObjectId(originDoc.classify)
         }, {

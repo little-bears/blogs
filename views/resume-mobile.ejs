@@ -25,7 +25,6 @@
       margin: 0;
       padding: 0;
       line-height: 1.5;
-
     }
 
     .navbar {
@@ -43,6 +42,7 @@
       box-sizing: border-box;
       box-shadow: 0 0 0.75vw #d1d1d1;
       color: #333333;
+      position: relative;
     }
 
     .resume-box:hover {
@@ -129,6 +129,26 @@
         padding: 3vw 0;
       }
     }
+
+    .btn-group {
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      z-index: 50;
+    }
+
+    .btn-group img {
+      width: 30px;
+      height: 30px;
+      padding: 2px;
+      background: #ffffff;
+      margin-right: 20px;
+      border-radius: 2px;
+      box-shadow: 0 0 10px #666666;
+      overflow: hidden;
+    }
   </style>
 </head>
 
@@ -136,6 +156,14 @@
   <%- include('./_nav.ejs', {url: data.currentUrl}) -%>
   <div class="page-box">
     <div class="container resume-box">
+      <div class="btn-group">
+        <a title="多页样式" href="/resume?type=book">
+          <img src="/assets/images/icon-book.png">
+        </a>
+        <a title="单页样式" href="/resume?type=paper">
+          <img src="/assets/images/icon-paper.png">
+        </a>
+      </div>
       <p class="name">熊刚</p>
       <p class="contact">
         <span>+(86) 17713552649</span>
