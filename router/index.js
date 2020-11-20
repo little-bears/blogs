@@ -3,7 +3,9 @@ let md5 = require("../model/md5.js");
 let { User } = require("../model/User.js");
 let mongoose = require("mongoose");
 let { Blog } = require("../model/Blog.js");
+let { Code } = require("../model/Code.js");
 let { Classify } = require("../model/Classify.js");
+const { render } = require("ejs");
 
 // 初始化项目-添加系统默认用户
 exports.init = function (req, res, next) {
@@ -173,16 +175,10 @@ exports.showBlog = function (req, res, next) {
 }
 // (3) 渲染笔记详情页
 exports.getDetail = function (req, res, next) {
-  if (req.params.id && req.params.id.length != 24) {
-    res.render("detail", {
-      data: {
-        currentUrl: 'detail',
-        article: null
-      }
-    })
-  } else {
+  let id = req.query.id;
+  if (id && id.length == 24) {
     Blog.find({
-      _id: mongoose.Types.ObjectId(req.params.id)
+      _id: mongoose.Types.ObjectId(id)
     }, function (err, docs) {
       if (err) {
         res.send(err);
@@ -218,6 +214,13 @@ exports.getDetail = function (req, res, next) {
         }
       }
     });
+  } else {
+    res.render("detail", {
+      data: {
+        currentUrl: 'detail',
+        article: null
+      }
+    })
   }
 }
 // (4) 渲染简历页
@@ -228,13 +231,15 @@ exports.showResume = function (req, res, next) {
     if (type == 'book') {
       res.render("resume-pc", {
         data: {
-          currentUrl: 'resume'
+          currentUrl: 'resume',
+          type: 'book'
         }
       });
     } else {
       res.render("resume-mobile", {
         data: {
-          currentUrl: 'resume'
+          currentUrl: 'resume',
+          type: 'paper'
         }
       });
     }
@@ -244,16 +249,58 @@ exports.showResume = function (req, res, next) {
     if (agentID) { // Mobile
       res.render("resume-mobile", {
         data: {
-          currentUrl: 'resume'
+          currentUrl: 'resume',
+          type: 'paper'
         }
       });
     } else { // PC
       res.render("resume-pc", {
         data: {
-          currentUrl: 'resume'
+          currentUrl: 'resume',
+          type: 'book'
         }
       });
     }
+  }
+}
+// (4) 代码在线测试页
+exports.showCode = function (req, res, next) {
+  let id = req.query.id;
+  if (id && id.length == 24) {
+    Code.find({
+      _id: mongoose.Types.ObjectId(id)
+    }, function (err, docs) {
+      if (err) {
+        res.send(err);
+      } else {
+        if (docs.length > 0) {
+          res.render("code", {
+            data: {
+              currentUrl: 'code',
+              code: docs[0]
+            }
+          })
+        } else {
+          res.render("code", {
+            data: {
+              currentUrl: 'code',
+              code: {
+                code: '// 仅支持在线运行JavaScript ~ '
+              }
+            }
+          })
+        }
+      }
+    });
+  } else {
+    res.render("code", {
+      data: {
+        currentUrl: 'code',
+        code: {
+          code: '// 仅支持在线运行JavaScript ~ '
+        }
+      }
+    })
   }
 }
 
@@ -275,23 +322,37 @@ exports.showBlogEdit = function (req, res, next) {
       res.send(err);
     } else {
       let id = req.query.id;
-      if (id) { // 修改笔记
-        Blog.find({
-          _id: mongoose.Types.ObjectId(id)
-        }, function (err, article) {
-          if (err) {
-            res.send(err);
-          } else {
-            res.render("back-layout", {
-              tplt: "back-blog-edit",
-              data: {
-                classify: docs,
-                article: article[0]
+      if (id) { // id存在
+        if (id.length != 24) { // id不合法
+          res.render("back-layout", {
+            tplt: "",
+            data: {}
+          })
+        } else { // id合法
+          Blog.find({
+            _id: mongoose.Types.ObjectId(id)
+          }, function (err, article) {
+            if (err) {
+              res.send(err);
+            } else { // id无效
+              if (article.length <= 0) {
+                res.render("back-layout", {
+                  tplt: "",
+                  data: {}
+                })
+              } else { // id有效
+                res.render("back-layout", {
+                  tplt: "back-blog-edit",
+                  data: {
+                    classify: docs,
+                    article: article[0]
+                  }
+                })
               }
-            })
-          }
-        });
-      } else { // 新增笔记
+            }
+          });
+        }
+      } else { // id不存在，新增代码块
         res.render("back-layout", {
           tplt: "back-blog-edit",
           data: {
@@ -300,7 +361,6 @@ exports.showBlogEdit = function (req, res, next) {
           }
         })
       }
-
     }
   });
 }
@@ -489,6 +549,93 @@ exports.showBlogBin = function (req, res, next) {
     }
   })
 }
+// (7) 渲染代码列表页
+exports.showCodeList = function (req, res, next) {
+  let pageSize = 10;
+  let page; // 请求页数
+  if (req.query.page) {
+    page = req.query.page < 1 ? 1 : req.query.page;
+  } else {
+    page = 1;
+  }
+  Code.find({}).countDocuments().exec(function (err, total) {
+    let pageTotal = Math.floor((total + pageSize - 1) / pageSize);
+    let currentPage = page > pageTotal ? pageTotal : page;
+    if (err) {
+      res.send(err);
+    } else {
+      if (total <= 0) {
+        res.render("back-layout", {
+          tplt: "back-code",
+          data: {
+            docs: [],
+            pageTotal: 0,
+            currentPage: 0
+          }
+        })
+      } else {
+        Code.find({}).skip((currentPage - 1) * pageSize).limit(pageSize).sort({
+          createtime: -1,
+        }).exec(function (err, docs) {
+          if (err) {
+            res.send(err);
+          } else {
+            res.render("back-layout", {
+              tplt: "back-code",
+              data: {
+                docs,
+                pageTotal,
+                currentPage
+              }
+            })
+          }
+        })
+      }
+    }
+  })
+}
+// (8) 渲染后台代码编辑页
+exports.showCodeEidt = function (req, res, next) {
+  let id = req.query.id;
+  if (id) { // id存在
+    if (id.length != 24) { // id不合法
+      res.render("back-layout", {
+        tplt: "",
+        data: {}
+      })
+    } else { // id合法
+      Code.find({
+        _id: mongoose.Types.ObjectId(id)
+      }, function (err, docs) {
+        if (err) {
+          res.send(err);
+        } else { // id无效
+          if (docs.length <= 0) {
+            res.render("back-layout", {
+              tplt: "",
+              data: {}
+            })
+          } else { // id有效
+            res.render("back-layout", {
+              tplt: "back-code-edit",
+              data: {
+                code: docs[0]
+              }
+            })
+          }
+        }
+      });
+    }
+  } else { // id不存在，新增代码块
+    res.render("back-layout", {
+      tplt: "back-code-edit",
+      data: {
+        code: {}
+      }
+    })
+  }
+}
+
 // 数据接口
 // (1) 添加笔记分类
 exports.saveClassify = function (req, res, next) {
@@ -791,6 +938,73 @@ exports.recoverBlog = function (req, res, next) {
 // (7) 删除笔记 - 永久删除
 exports.destroyBlog = function (req, res, next) {
   Blog.deleteOne({
+    _id: mongoose.Types.ObjectId(req.body.id)
+  }, function (err) {
+    if (err) {
+      res.send({
+        code: 1,
+        msg: "删除失败"
+      });
+    } else {
+      res.send({
+        code: 0,
+        msg: "删除成功"
+      });
+    }
+  });
+}
+// (8) 创建代码片段
+exports.saveCode = function (req, res, next) {
+  let id = req.body.id;
+  if (id) { // 修改代码块
+    Code.find({ _id: mongoose.Types.ObjectId(id) }).exec(function (err, docs) {
+      if (err) {
+        res.send(err)
+      } else {
+        Code.updateOne({
+          _id: mongoose.Types.ObjectId(id)
+        }, {
+          $set: {
+            title: req.body.title,
+            code: req.body.code
+          }
+        }, function (err, docs) {
+          if (err) {
+            res.send({
+              code: 1,
+              msg: "修改失败"
+            });
+          } else {
+            res.send({
+              code: 0,
+              msg: "修改成功"
+            });
+          }
+        })
+      }
+    })
+  } else { // 添加代码块
+    Code.create({
+      title: req.body.title,
+      code: req.body.code
+    }, function (err, docs) {
+      if (err) {
+        res.send({
+          code: 1,
+          msg: "提交失败"
+        });
+      } else {
+        res.send({
+          code: 0,
+          msg: "提交成功"
+        });
+      }
+    });
+  }
+}
+// (9) 删除代码片段
+exports.deleteCode = function (req, res, next) {
+  Code.deleteOne({
     _id: mongoose.Types.ObjectId(req.body.id)
   }, function (err) {
     if (err) {

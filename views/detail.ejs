@@ -176,7 +176,7 @@
           <% if(data.list && data.list.length > 1) {%>
           <% data.list.forEach(function(item,index){%>
           <% if(data.article.title != item.title) { %>
-          <a class="list-item" href="/detail/<%= item._id %>"><%= item.title %></a>
+          <a class="list-item" href="/detail?id=<%= item._id %>"><%= item.title %></a>
           <% } %>
           <% }) %>
           <% }else{ %>

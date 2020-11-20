@@ -147,12 +147,16 @@
             <p class="list-iten-text">分类管理</p>
           </a>
           <a href="/back-blog" class="list-item <%= tplt == 'back-blog' ? 'active' : '' %>">
-            <span class="glyphicon glyphicon glyphicon-book" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
             <p class="list-iten-text">笔记管理</p>
+          </a>
+          <a href="/back-code" class="list-item <%= tplt == 'back-code' ? 'active' : '' %>">
+            <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+            <p class="list-iten-text">代码管理</p>
           </a>
           <a href="/back-blog-bin" class="list-item <%= tplt == 'back-blog-bin' ? 'active' : '' %>">
             <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
-            <p class="list-iten-text">回收站!!</p>
+            <p class="list-iten-text">笔记恢复</p>
           </a>
         </div>
 
@@ -166,7 +170,8 @@
         </div>
         <div class="row">
           <!-- 根据路由来渲染对应子页面 -->
-          <% var pages = ["back-index", "back-blog", "back-blog-edit", "back-blog-classify", "back-blog-bin"] %>
+          <% var pages = ["back-index", "back-blog", "back-blog-edit", "back-blog-classify", "back-blog-bin",
+          "back-code-edit", "back-code"] %>
           <% for(var i = 0;i < pages.length; i++){ %>
           <% if(tplt == pages[i]){ %>
           <%- include('./'+pages[i]+'.ejs', data) -%>

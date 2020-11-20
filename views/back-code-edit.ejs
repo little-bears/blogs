@@ -1,0 +1,214 @@
+<link rel="stylesheet" href="/codemirror/css/codemirror.css">
+<link rel="stylesheet" href="codemirror/theme/seti.css">
+<link rel="shortcut icon" href="/assets/images/favicon.ico" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="/codemirror/addon/hint/show-hint.css">
+<style>
+  body {
+    background: url(/assets/images/bg.png);
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .page-box {
+    padding: 20px;
+  }
+
+  .input-group {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  #code+.CodeMirror {
+    padding: 10px 0;
+    height: auto;
+  }
+
+  .btn-group {
+    height: 40px;
+    background: #fff;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .btn-group img {
+    width: 30px;
+    height: auto;
+    margin-right: 30px;
+    cursor: pointer;
+  }
+
+  #code-result+.CodeMirror {
+    padding: 10px 20px;
+    height: auto;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .button-group button {
+    width: 80px;
+    height: 36px;
+    margin-left: 30px;
+    margin-top: 20px;
+  }
+
+  #ue_err {
+    color: red;
+    line-height: 2;
+  }
+
+  .no-classify {
+    color: red;
+    margin: 0;
+  }
+</style>
+
+<div class="input-group">
+  <input type="text" id="title" name="title" class="form-control" value="<%= data.code.title %>"
+    placeholder="请输入代码块名称~">
+  <input type="text" id="id_" name="id_" style="display: none" value="<%= data.code._id %>" class="form-control">
+</div>
+<textarea id="code"></textarea>
+<div class="btn-group">
+  <img title="运行代码" id="run-btn" src="/assets/images/icon_run.png" />
+  <img title="清空输出" id="clear-btn" src="/assets/images/icon_clear.png" />
+  <img title="重置代码" id="reset-btn" src="/assets/images/icon_reset.png" />
+</div>
+<textarea id="code-result"></textarea>
+<!-- 提交状态提示 -->
+<p id="ue_err"></p>
+<div class="button-group">
+  <button type="button" class="btn btn-primary" id="submitUE">提交</button>
+  <button type="button" class="btn btn-default" id="cancelUE">取消</button>
+</div>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="/codemirror/js/codemirror.js"></script>
+<script src="/codemirror/mode/javascript/javascript.js"></script>
+<script src="/codemirror/addon/hint/show-hint.js"></script>
+<script src="/codemirror/addon/hint/javascript-hint.js"></script>
+<script src="/assets/js/axios.min.js"></script>
+<script type="text/javascript">
+  $(function () {
+    let originCode = `<%= data.code.code %>`; // 模板字符串遇到\n内容不进行换行，避免造成语法错误
+    // 初始化代码编辑框
+    let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      tabSize: 2,
+      lineNumbers: true,
+      matchBrackets: true,
+      completeSingle: false,
+      theme: "seti",
+      mode: "text/javascript"
+    });
+    // 初始化执行结果框
+    let editorResult = CodeMirror.fromTextArea(document.getElementById("code-result"), {
+      tabSize: 2,
+      mode: "text/javascript",
+      theme: 'seti',
+      readOnly: 'nocursor'
+    });
+    // 初始化代码
+    editor.setValue(originCode);
+
+    // 代码提示
+    editor.on("inputRead", function () {
+      //获取用户当前的编辑器中的编写的代码
+      let words = editor.getValue() + "";
+      //利用正则取出用户输入的所有的英文的字母
+      words = words.replace(/[a-z]+[\-|\']+[a-z]+/ig, '').match(/([a-z]+)/ig);
+      //将获取到的用户的单词传入CodeMirror,并在javascript-hint中做匹配
+      CodeMirror.ukeys = words;
+      //调用显示提示
+      editor.showHint();
+    })
+
+    // 事件 - 运行代码
+    document.getElementById('run-btn').addEventListener('click', function () {
+      // 清空上一次运行结果
+      editorResult.setValue("")
+      // 重写全局console.log方法输出结果到对应UI上
+      console.log = (function () {
+        return function (str) {
+          let oldStr = editorResult.getValue()
+          oldStr && (str = oldStr + `\n${str}`)
+          editorResult.setValue(str.toString())
+        }
+      })(console.log);
+      // eval执行代码
+      try {
+        eval(editor.getValue());
+      } catch (err) {
+        console.log(err)
+      }
+      // 还原console.log方法
+      (function () {
+        let iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        document.body.appendChild(iframe);
+        window.console = iframe.contentWindow.console;
+        iframe.parentNode.removeChild(iframe);
+      })();
+    })
+    // 事件 - 清空输出
+    document.getElementById('clear-btn').addEventListener('click', function () {
+      editorResult.setValue("");
+    })
+    // 事件 - 重置代码
+    document.getElementById('reset-btn').addEventListener('click', function () {
+      editor.setValue(originCode);
+      editorResult.setValue("");
+    })
+
+    // 提交事件
+    $('#submitUE').click(function () {
+      let title = $("#title").val();
+      if (title) {
+        $("#ue_err").html("");
+      } else {
+        $("#ue_err").html("请填写代码块名称~");
+        return;
+      }
+      let code = editor.getValue();
+      if (code) {
+        $("#ue_err").html("");
+      } else {
+        $("#ue_err").html("请填写测试代码!");
+        return;
+      }
+      $('#submitUE').attr("disabled", true);
+      let param = new FormData();
+      let id = $("#id_").val();
+      param.append('id', id);
+      param.append('title', title);
+      param.append('code', code);
+      axios.post('/saveCode', param, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then(function (res) {
+        if (res.data.code == 0) {
+          $("#ue_err").html(res.data.msg);
+          $('#submitUE').attr("disabled", false);
+          setTimeout(function () {
+            window.location.href = '/back-code'
+          }, 500)
+        } else {
+          $("#ue_err").html(res.data.msg);
+          $('#submitUE').removeAttr("disabled");
+        }
+      }).catch(function (err) {
+        console.log(err);
+      })
+    })
+    $("#cancelUE").click(function () {
+      window.location.href = '/back-code'
+    })
+  })
+
+</script>

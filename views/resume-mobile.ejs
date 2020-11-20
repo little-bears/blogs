@@ -33,20 +33,20 @@
 
     .page-box {
       box-sizing: border-box;
+      padding: 4.51vw 0;
     }
 
     .resume-box {
       box-sizing: border-box;
       padding: 4.51vw;
       background: rgba(255, 255, 255, 0.5);
-      box-sizing: border-box;
-      box-shadow: 0 0 0.75vw #d1d1d1;
+      box-shadow: 0 0 0.75vw #a8a8a8;
       color: #333333;
       position: relative;
     }
 
     .resume-box:hover {
-      box-shadow: 0 0 0.75vw #a8a8a8;
+      box-shadow: 0 0 0.75vw #666666;
     }
 
     .name {
@@ -110,7 +110,7 @@
 
     @media screen and (max-width: 992px) {
       .page-box {
-        padding: 1.5vw;
+        padding: 2vw;
       }
 
       .name {
@@ -146,8 +146,16 @@
       background: #ffffff;
       margin-right: 20px;
       border-radius: 2px;
-      box-shadow: 0 0 10px #666666;
+      border: 1px solid #f5f5f5;
       overflow: hidden;
+    }
+
+    .btn-group .type-atcive img {
+      box-shadow: 0 0 0.75vw #a8a8a8;
+    }
+
+    .btn-group img:hover {
+      box-shadow: 0 0 0.75vw #666666;
     }
   </style>
 </head>
@@ -157,10 +165,10 @@
   <div class="page-box">
     <div class="container resume-box">
       <div class="btn-group">
-        <a title="多页样式" href="/resume?type=book">
+        <a title="多页样式" href="/resume?type=book" class="<%= data.type == 'book' ? 'type-atcive' : '' %>">
           <img src="/assets/images/icon-book.png">
         </a>
-        <a title="单页样式" href="/resume?type=paper">
+        <a title="单页样式" href="/resume?type=paper" class="<%= data.type == 'paper' ? 'type-atcive' : '' %>">
           <img src="/assets/images/icon-paper.png">
         </a>
       </div>

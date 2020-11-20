@@ -111,7 +111,7 @@
             return;
         }
         // 存库前转义\n防止回显时页面报错
-        let content = UE.getEditor('editor').getContent().replace(/\n/g,"<br>");
+        let content = UE.getEditor('editor').getContent().replace(/\n/g,"<br>"); // 也可使用``模板字符串解决字符串换行问题
         if (content && content.length > 10) {
             $("#ue_err").html("");
         } else {

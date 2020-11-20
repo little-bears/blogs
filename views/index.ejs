@@ -258,6 +258,9 @@
       font-size: 24px;
       color: #333;
       margin-bottom: 6px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .arc-name:hover {
@@ -456,7 +459,7 @@
           <% if(data.docs && data.docs.length > 0) {%>
           <% data.docs.forEach(function(item,index){%>
           <div class="arc-item">
-            <a class="arc-name" href="/detail/<%= item._id %>"><%= item.title %></a>
+            <a class="arc-name" href="/detail?id=<%= item._id %>"><%= item.title %></a>
             <div class="arc-tips-group">
               <div class="arc-tip-item">
                 <img src="/assets/images/icon-arc-classify.png">

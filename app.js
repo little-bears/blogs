@@ -57,9 +57,11 @@ app.get("/", router.showIndex);
 // (2) 渲染笔记列表页
 app.get("/blog", router.showBlog);
 // (3) 渲染笔记详情页
-app.get("/detail/:id", router.getDetail);
+app.get("/detail", router.getDetail);
 // (4) 渲染简历页
 app.get("/resume", router.showResume);
+// (5) 代码在线测试页
+app.get("/code", router.showCode);
 
 // 2、后端
 // (1) 渲染后台创建笔记页
@@ -74,6 +76,10 @@ app.get("/back-index", router.checkSession, router.showBackIndex);
 app.get("/admin", router.showAdmin);
 // (6) 渲染后台笔记回收站
 app.get("/back-blog-bin", router.checkSession, router.showBlogBin);
+// (7)渲染代码列表页
+app.get("/back-code", router.checkSession, router.showCodeList);
+// (8) 渲染代码编辑代码页
+app.get("/back-code-edit", router.checkSession, router.showCodeEidt);
 
 
 // 数据接口
@@ -91,6 +97,15 @@ app.post("/admin", router.AdminLogin);
 app.post("/recoverBlog", router.recoverBlog);
 // (7) 永久删除笔记
 app.post("/destroyBlog", router.destroyBlog);
+// (8) 创建代码片段
+app.post("/saveCode", multipartyMiddleware, router.saveCode);
+// (9) 删除代码片段
+app.post("/deleteCode", router.deleteCode);
+
+// 配置404页面
+app.use(function(req,res){
+	res.render("404");
+})
 
 // 设置服务器端口
 app.listen(3001, router.init);

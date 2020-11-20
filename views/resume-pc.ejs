@@ -33,8 +33,20 @@
       background: #ffffff;
       margin-right: 20px;
       border-radius: 2px;
-      box-shadow: 0 0 10px #666666;
+      border: 1px solid #f5f5f5;
       overflow: hidden;
+    }
+
+    .btn-group .type-atcive img {
+      box-shadow: 0 0 0.75vw #a8a8a8;
+    }
+
+    .btn-group img:hover {
+      box-shadow: 0 0 0.75vw #666666;
+    }
+
+    .magazine .region {
+      display: none;
     }
   </style>
 </head>
@@ -43,10 +55,10 @@
   <%- include('./_nav.ejs', {url: data.currentUrl}) -%>
   <div id="canvas">
     <div class="btn-group">
-      <a title="多页样式" href="/resume?type=book">
+      <a title="多页样式" href="/resume?type=book" class="<%= data.type == 'book' ? 'type-atcive' : '' %>">
         <img src="/assets/images/icon-book.png">
       </a>
-      <a title="单页样式" href="/resume?type=paper">
+      <a title="单页样式" href="/resume?type=paper" class="<%= data.type == 'paper' ? 'type-atcive' : '' %>">
         <img src="/assets/images/icon-paper.png">
       </a>
     </div>
@@ -71,29 +83,9 @@
             <img src="/turnjs4/samples/magazine/pages/3-thumb.jpg" width="76" height="100" class="page-3">
             <span>2-3</span>
           </li>
-          <li class="d">
-            <img src="/turnjs4/samples/magazine/pages/4-thumb.jpg" width="76" height="100" class="page-4">
-            <img src="/turnjs4/samples/magazine/pages/5-thumb.jpg" width="76" height="100" class="page-5">
-            <span>4-5</span>
-          </li>
-          <li class="d">
-            <img src="/turnjs4/samples/magazine/pages/6-thumb.jpg" width="76" height="100" class="page-6">
-            <img src="/turnjs4/samples/magazine/pages/7-thumb.jpg" width="76" height="100" class="page-7">
-            <span>6-7</span>
-          </li>
-          <li class="d">
-            <img src="/turnjs4/samples/magazine/pages/8-thumb.jpg" width="76" height="100" class="page-8">
-            <img src="/turnjs4/samples/magazine/pages/9-thumb.jpg" width="76" height="100" class="page-9">
-            <span>8-9</span>
-          </li>
-          <li class="d">
-            <img src="/turnjs4/samples/magazine/pages/10-thumb.jpg" width="76" height="100" class="page-10">
-            <img src="/turnjs4/samples/magazine/pages/11-thumb.jpg" width="76" height="100" class="page-11">
-            <span>10-11</span>
-          </li>
           <li class="i">
-            <img src="/turnjs4/samples/magazine/pages/12-thumb.jpg" width="76" height="100" class="page-12">
-            <span>12</span>
+            <img src="/turnjs4/samples/magazine/pages/4-thumb.jpg" width="76" height="100" class="page-4">
+            <span>4</span>
           </li>
           <ul>
             <div>
@@ -115,7 +107,7 @@
             gradients: true,
             autoCenter: true,
             elevation: 50,
-            pages: 12,
+            pages: 4,
             when: {
               turning: function (event, page, view) {
                 var book = $(this),

@@ -52,6 +52,9 @@
       font-size: 24px;
       color: #333;
       margin-bottom: 6px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .arc-tips-group {
@@ -214,7 +217,7 @@
     <div class="blog-list col-md-9">
       <% if(data.docs && data.docs.length > 0) {%>
       <% data.docs.forEach(function(item,index){%>
-      <a href="/detail/<%= item._id %>" class="blog-box">
+      <a href="/detail?id=<%= item._id %>" class="blog-box">
         <p class="arc-title">
           <%= item.title %>
         </p>

@@ -63,36 +63,17 @@
 </style>
 <div class="content-box">
   <form class="form-box">
-    <div class="flex-box form-group">
-      <label class="label-title" for="classify">文章类别</label>
-      <select class="form-control" name="classify" id="classify" value="">
-        <% if(data.classify && data.classify.length > 0) {%>
-        <option style='display: none'></option>
-        <% data.classify.forEach(function(item,index){%>
-        <% if(data.queryClassify == item._id) {%>
-        <option value="<%= item._id %>" selected><%= item.classify %></option>
-        <% }else{ %>
-        <option value="<%= item._id %>"><%= item.classify %></option>
-        <% } %>
-        <% }) %>
-        <% } %>
-      </select>
-    </div>
-    <div class="btn-group">
-      <button type="button" class="queryBtn btn btn-primary">查询</button>
-      <button type="button" class="clearBtn btn btn-default">清空</button>
-    </div>
     <div class="new-a-box">
-      <a class="new-blog" href="/back-blog-edit">新建</a>
+      <a class="new-blog" href="/back-code-edit">新建代码块</a>
     </div>
   </form>
   <div class="col-sm-12 table-responsive">
     <table class="table table-bordered table-hover">
       <thead>
         <tr>
-          <th> 笔记标题 </th>
-          <th> 笔记分类 </th>
-          <th> 发布状态 </th>
+          <th> 代码名称 </th>
+          <th> 代码内容 </th>
+          <th> 测试地址 </th>
           <th> 添加时间 </th>
           <th> 操作 </th>
         </tr>
@@ -101,13 +82,13 @@
         <% if(data.docs && data.docs.length > 0) {%>
         <% data.docs.forEach(function(item,index){%>
         <tr>
-          <td> <a href="/detail?id=<%= item._id %>"><%= item.title %></a> </td>
-          <td> <%= data.classifyMap[item.classify] %> </td>
-          <td> <%= item.ispublish == true ? '发布' : '暂未发布' %> </td>
+          <td> <%= item.title %> </td>
+          <td> <%= item.code %> </td>
+          <td> /code?id=<%= item.id %> </td>
           <td> <%= dateFormat(item.createtime) %> </td>
           <td>
-            <button type="button" class="updateBlog btn btn-info btn-sm" data-id="<%= item._id %>">修改</button>
-            <button type="button" class="deleteBlog btn btn-danger btn-sm" data-id="<%= item._id %>">删除</button>
+            <button type="button" class="updateCode btn btn-info btn-sm" data-id="<%= item._id %>">修改</button>
+            <button type="button" class="deleteCode btn btn-danger btn-sm" data-id="<%= item._id %>">删除</button>
           </td>
         </tr>
         <% }) %>
@@ -163,9 +144,9 @@
   function getPageUrl() {
     let classify = getQueryVariable("classify");
     if (classify) {
-      return '/back-blog?classify=' + classify + '&page='
+      return '/back-code?classify=' + classify + '&page='
     } else {
-      return '/back-blog?page='
+      return '/back-code?page='
     }
   }
   let currentPage = '<%= parseInt(data.currentPage) %>';
@@ -194,22 +175,14 @@
     }
   })
 
-  $(".queryBtn").click(function () {
-    let classify = $("#classify").val();
-    window.location.href = '/back-blog?classify=' + classify;
-  })
-  $(".clearBtn").click(function () {
-    let classify = $("#classify").val();
-    window.location.href = '/back-blog';
-  })
-  $(".updateBlog").click(function () {
+  $(".updateCode").click(function () {
     let id = $(this).data("id");
-    window.location.href = '/back-blog-edit?id=' + id
+    window.location.href = '/back-code-edit?id=' + id
   })
-  $(".deleteBlog").click(function () {
+  $(".deleteCode").click(function () {
     let id = $(this).data("id");
     if (id && id.length > 0) {
-      axios.post('/deleteBlog', {
+      axios.post('/deleteCode', {
         id: id
       }).then(function (res) {
         if (res.data.code == 0) {
