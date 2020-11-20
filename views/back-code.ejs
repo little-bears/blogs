@@ -72,7 +72,6 @@
       <thead>
         <tr>
           <th> 代码名称 </th>
-          <th> 代码内容 </th>
           <th> 测试地址 </th>
           <th> 添加时间 </th>
           <th> 操作 </th>
@@ -83,7 +82,6 @@
         <% data.docs.forEach(function(item,index){%>
         <tr>
           <td> <%= item.title %> </td>
-          <td> <%= item.code %> </td>
           <td> /code?id=<%= item.id %> </td>
           <td> <%= dateFormat(item.createtime) %> </td>
           <td>
