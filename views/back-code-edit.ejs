@@ -1,6 +1,7 @@
-<link rel="stylesheet" href="/codemirror/css/codemirror.css">
-<link rel="stylesheet" href="codemirror/theme/seti.css">
+
 <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+<link rel="stylesheet" href="codemirror/theme/seti.css">
+<link rel="stylesheet" href="/codemirror/css/codemirror.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
   integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <link rel="stylesheet" href="/codemirror/addon/hint/show-hint.css">
@@ -140,14 +141,14 @@
         return function (str) {
           let oldStr = editorResult.getValue()
           oldStr && (str = oldStr + `\n${str}`)
-          editorResult.setValue(str.toString())
+          editorResult.setValue(`${str}`)
         }
       })(console.log);
       // eval执行代码
       try {
         eval(editor.getValue());
       } catch (err) {
-        console.log(err)
+        console.log(`${err} (代码终止执行)`)
       }
       // 还原console.log方法
       (function () {
