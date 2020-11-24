@@ -82,7 +82,7 @@ exports.showIndex = function (req, res, next) {
       };
       Blog.find(where).sort({
         updatetime: -1
-      }).limit(5).exec(function (err, docs) {
+      }).limit(8).exec(function (err, docs) {
         if (err) {
           res.send(err);
         } else {

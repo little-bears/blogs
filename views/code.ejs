@@ -67,6 +67,9 @@
   <script type="text/javascript">
     $(function () {
       let originCode = `<%= data.code.code %>`;
+      // 处理上面赋值语句照成的字符转义问题
+      originCode = originCode.replace(/&#34;/g, '"');
+      originCode = originCode.replace(/&#39;/g, "'");
       // 初始化代码编辑框
       let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
         tabSize: 2,
@@ -104,10 +107,18 @@
         editorResult.setValue("")
         // 重写全局console.log方法输出结果到对应UI上
         console.log = (function () {
-          return function (str) {
+          return function (value) {
+            // 输出对象
+            if (Object.prototype.toString.call(value) == "[object Object]") {
+              // 处理对象中的Function类型
+              fnToStr(value)
+              value = JSON.stringify(value)
+              // 处理换行、空白等字符
+              value = value.replace(/(\\n\\n)/g, "\\n").replace(/(\\n)/g, "").replace(/(\s*)/g, "").replace(/(\\r)/g, "").replace(/(\\t)/g, "");
+            }
             let oldStr = editorResult.getValue()
-            oldStr && (str = oldStr + `\n${str}`)
-            editorResult.setValue(`${str}`)
+            oldStr && (value = oldStr + `\n${value}`)
+            editorResult.setValue(`${value}`)
           }
         })(console.log);
         // eval执行代码
@@ -135,6 +146,18 @@
         editorResult.setValue("");
       })
     })
+    
+    // 递归处理对象中的Function类型为String类型,使得JSON.stringify能够输出对象里的函数
+    function fnToStr(obj) {
+      for (let i in obj) {
+        if (Object.prototype.toString.call(obj[i]) == "[object Object]") {
+          fnToStr(obj[i])
+        }
+        if (Object.prototype.toString.call(obj[i]) == "[object Function]") {
+          obj[i] = obj[i].toString()
+        }
+      }
+    }
   </script>
 </body>
 

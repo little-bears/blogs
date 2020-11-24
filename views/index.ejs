@@ -28,64 +28,6 @@
       padding: 10px;
     }
 
-    .carousel-box {
-      width: 100%;
-      height: auto;
-      margin-top: 10px;
-      box-sizing: border-box;
-    }
-
-    .carousel {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-    }
-
-    .carousel-img-box {
-      width: 100%;
-      height: auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      display: none;
-      overflow: hidden;
-    }
-
-    .carousel-img-box img {
-      width: 100%;
-      height: auto;
-    }
-
-    .dots {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-sizing: border-box;
-      margin-top: 10px;
-      border: 1px solid #c4c0c0;
-    }
-
-    .dots-box {
-      cursor: pointer;
-      width: 23.5%;
-      height: auto;
-      display: flex;
-      border-radius: 4px;
-      border: 1px solid #fff;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .dots-box img {
-      width: 100%;
-      height: 100%;
-    }
-
     .my-intro {
       width: 100%;
       height: 395px;
@@ -233,13 +175,13 @@
       width: 100%;
       height: auto;
       box-sizing: border-box;
-      padding: 30px 0 10px 0;
+      padding: 0 0 10px 0;
     }
 
     .arc-item {
       width: 100%;
       height: 100px;
-      margin-bottom: 15px;
+      margin-top: 10px;
       box-sizing: border-box;
       padding: 0 20px;
       display: flex;
@@ -323,95 +265,6 @@
       letter-spacing: 1px;
       margin-bottom: 15px;
     }
-
-    .arc-sub-title {
-      width: 100%;
-      height: 80px;
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-
-    .arc-sub-title::before {
-      content: '';
-      display: block;
-      clear: both;
-      width: 300px;
-      height: 2px;
-      background: linear-gradient(to left, #74a2ca, #ffffff);
-    }
-
-    .arc-sub-title::after {
-      content: '';
-      display: block;
-      clear: both;
-      width: 300px;
-      height: 2px;
-      background: linear-gradient(to right, #74a2ca, #ffffff);
-    }
-
-    .icon-aerospace {
-      width: 24px;
-      height: auto;
-      margin: 0 5px;
-    }
-
-    .arc-sub-title span {
-      min-width: 130px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 30px;
-      font-weight: 700;
-      margin: 0 15 px;
-    }
-
-    .my-clock {
-      width: auto;
-      height: 360px;
-      box-sizing: border-box;
-      padding: 0 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #d1d1d1;
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
-      transition: all 0.5s;
-    }
-
-    .my-clock:hover {
-      box-shadow: 0 0 10px #a8a8a8;
-    }
-
-    .my-date {
-      font-size: 14px;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    @media screen and (max-width: 992px) {
-      .arc-sub-title span {
-        min-width: 100px;
-        font-size: 24px;
-      }
-
-      .arc-sub-title::before {
-        width: 200px;
-      }
-
-      .arc-sub-title::after {
-        width: 200px;
-      }
-
-      .icon-aerospace {
-        width: 20px;
-      }
-    }
   </style>
 </head>
 
@@ -419,42 +272,7 @@
   <%- include('./_nav.ejs', {url: data.currentUrl}) -%>
   <div class="index-box">
     <div class="main-box col-md-9">
-      <div class="carousel-box">
-        <div class="carousel">
-          <div class="carousel-img-box">
-            <img src="/assets/images/ad1.jpg">
-          </div>
-          <div class="carousel-img-box">
-            <img src="/assets/images/ad2.jpg">
-          </div>
-          <div class="carousel-img-box">
-            <img src="/assets/images/ad3.jpg">
-          </div>
-          <div class="carousel-img-box">
-            <img src="/assets/images/ad4.jpg">
-          </div>
-        </div>
-        <div class="dots">
-          <div class="dots-box" data-inx="0">
-            <img src="/assets/images/ad1.jpg">
-          </div>
-          <div class="dots-box" data-inx="1">
-            <img src="/assets/images/ad2.jpg">
-          </div>
-          <div class="dots-box" data-inx="2">
-            <img src="/assets/images/ad3.jpg">
-          </div>
-          <div class="dots-box" data-inx="3">
-            <img src="/assets/images/ad4.jpg">
-          </div>
-        </div>
-      </div>
       <div class="content-box">
-        <div class="arc-sub-title">
-          <img class="icon-aerospace" src="/assets/images/icon-aerospace.png">
-          <span>最新笔记</span>
-          <img class="icon-aerospace" src="/assets/images/icon-aerospace.png">
-        </div>
         <div class="arc-list">
           <% if(data.docs && data.docs.length > 0) {%>
           <% data.docs.forEach(function(item,index){%>
@@ -549,10 +367,6 @@
           </span>
         </div>
       </div>
-      <div class="my-clock">
-        <p class="my-date"></p>
-        <canvas id="clock" height="200px" width="200px"></canvas>
-      </div>
       <%- include('./_footer.ejs') -%>
     </div>
   </div>
@@ -560,169 +374,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"
     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
     </script>
-  <script>
-    $(function () {
-      let inx = 0;
-      let timer;
-      const imgs = document.getElementsByClassName('carousel-img-box')
-      const dotImgs = document.getElementsByClassName('dots-box')
-      imgs[0].setAttribute('style', 'display: flex')
-      dotImgs[0].setAttribute('style', 'box-shadow: 0 0 10px #333')
-      setTimer()
-
-      for (let j = 0; j < dotImgs.length; j++) {
-        dotImgs[j].addEventListener('mouseover', function () {
-          inx = this.dataset.inx
-          setImg()
-          clearTimer()
-        })
-        dotImgs[j].addEventListener('mouseout', function () {
-          setTimer()
-        })
-      }
-
-      function setTimer() {
-        timer = setInterval(() => {
-          setImg()
-          inx = (inx + 1) % imgs.length
-        }, 3000)
-      }
-      function clearTimer() {
-        clearInterval(timer)
-        timer = null
-      }
-
-      function setImg() {
-        for (let i = 0; i < imgs.length; i++) {
-          imgs[i].setAttribute('style', 'display: none')
-          dotImgs[i].setAttribute('style', 'box-shadow: none')
-        }
-        imgs[inx].setAttribute('style', 'display: flex')
-        dotImgs[inx].setAttribute('style', 'box-shadow: 0 0 10px #333')
-      }
-    })
-
-    // 时钟
-    let dom = document.getElementById('clock');
-    let ctx = dom.getContext('2d');
-    let width = ctx.canvas.width;
-    let height = ctx.canvas.height;
-    let r = width / 2;
-
-    // 绘制时钟，定义计时器对其进行实时刷新
-    draw();
-    setInterval(draw, 1000);
-
-    //绘制时钟圆环
-    function drawBackground() {
-      ctx.save();
-      ctx.translate(r, r);
-      ctx.beginPath();
-      ctx.lineWidth = 10;
-      ctx.arc(0, 0, r - ctx.lineWidth / 2, 0, 2 * Math.PI, false);
-      ctx.stroke();
-    }
-    // 绘制时间数字
-    function drawNumber() {
-      let hourNumbers = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2];
-      hourNumbers.map(function (number, i) {
-        let rad = 2 * Math.PI / 12 * i;
-        let x = Math.cos(rad) * (r - 30);
-        let y = Math.sin(rad) * (r - 30);
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = 16 + "px Arial";
-        ctx.fillText(number, x, y)
-      });
-      ctx.stroke();
-    }
-
-    // 绘制刻度
-    function drawDots() {
-      let hourNumbers = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2];
-      for (let i = 0; i < 60; i++) {
-        let rad = 2 * Math.PI / 60 * i;
-        let x = Math.cos(rad) * (r - 16);
-        let y = Math.sin(rad) * (r - 16) + 1;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = 18 + "px Arial";
-        if (i % 5 == 0) {
-          ctx.fillStyle = 'black';
-        } else {
-          ctx.fillStyle = '#d1d1d1';
-        }
-        ctx.fillText(' • ', x, y)
-      }
-      ctx.stroke();
-    }
-
-    // 绘制时针
-    function drawHour(hour, minute) {
-      ctx.save();
-      ctx.beginPath();
-      let rad = 2 * Math.PI / 12 * hour;
-      let mrad = 2 * Math.PI / 12 / 60 * minute;
-      ctx.rotate(rad + mrad);
-      ctx.lineWidth = 6;
-      ctx.moveTo(0, 10);
-      ctx.lineTo(0, -r / 2);
-      ctx.lineCap = 'round';
-      ctx.stroke();
-      ctx.restore();
-    }
-    // 绘制分针
-    function drawMinute(minute, second) {
-      ctx.save()
-      ctx.beginPath();
-      let rad = 2 * Math.PI / 60 * minute;
-      let mrad = 2 * Math.PI / 60 / 60 * second;
-      ctx.rotate(rad + mrad);
-      ctx.lineWidth = 4;
-      ctx.moveTo(0, 10);
-      ctx.lineTo(0, -r / 2 - 10);
-      ctx.lineCap = 'round';
-      ctx.stroke();
-      ctx.restore();
-    }
-    // 绘制秒针
-    function drawSecond(second) {
-      ctx.save();
-      ctx.beginPath();
-      let rad = 2 * Math.PI / 60 * second;
-      ctx.rotate(rad);
-      ctx.lineWidth = 2;
-      ctx.moveTo(0, 10);
-      ctx.lineTo(0, -r / 2 - 20);
-      let gnt1 = ctx.createLinearGradient(0, 0, 0, -r / 2 - 20);
-      gnt1.addColorStop(0, 'red');
-      gnt1.addColorStop(1, 'rgb(250, 94, 94)');
-      ctx.strokeStyle = gnt1;
-      ctx.lineCap = 'round';
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // 绘制时间
-    function draw() {
-      ctx.clearRect(0, 0, 300, 300);
-      let now = new Date();
-      let year = now.getFullYear();
-      let month = now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1;
-      let day = now.getDate() < 10 ? '0' + now.getDate() : now.getDate();
-      let hour = now.getHours() < 10 ? '0' + now.getHours() : now.getHours();
-      let minute = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
-      let second = now.getSeconds() < 10 ? '0' + now.getSeconds() : now.getSeconds();
-      $('.my-date').html(`${year}年${month}月${day}日 ${hour}:${minute}:${second}`)
-      drawBackground();
-      drawNumber();
-      drawDots();
-      drawHour(hour, minute);
-      drawMinute(minute, second);
-      drawSecond(second);
-      ctx.restore();
-    }
-  </script>
 </body>
 
 </html>
