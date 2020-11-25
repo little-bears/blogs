@@ -103,6 +103,9 @@
     // 处理上面赋值语句照成的字符转义问题
     originCode = originCode.replace(/&#34;/g, '"');
     originCode = originCode.replace(/&#39;/g, "'");
+    originCode = originCode.replace(/&amp;/g, "&");
+    originCode = originCode.replace(/&gt;/g, ">");
+    originCode = originCode.replace(/&lt;/g, "<");
     // 初始化代码编辑框
     let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
       tabSize: 2,
