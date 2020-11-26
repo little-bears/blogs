@@ -130,14 +130,6 @@
         } catch (err) {
           console.log(`${err} (代码终止执行)`)
         }
-        // 还原console.log方法
-        (function () {
-          let iframe = document.createElement("iframe");
-          iframe.style.display = "none";
-          document.body.appendChild(iframe);
-          window.console = iframe.contentWindow.console;
-          iframe.parentNode.removeChild(iframe);
-        })();
       })
       // 事件 - 清空输出
       document.getElementById('clear-btn').addEventListener('click', function () {

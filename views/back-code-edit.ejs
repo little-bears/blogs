@@ -119,8 +119,7 @@
     let editorResult = CodeMirror.fromTextArea(document.getElementById("code-result"), {
       tabSize: 2,
       mode: "text/javascript",
-      theme: 'seti',
-      readOnly: 'nocursor'
+      theme: 'seti'
     });
     // 初始化代码
     editor.setValue(originCode);
@@ -163,14 +162,6 @@
       } catch (err) {
         console.log(`${err} (代码终止执行)`)
       }
-      // 还原console.log方法
-      (function () {
-        let iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        document.body.appendChild(iframe);
-        window.console = iframe.contentWindow.console;
-        iframe.parentNode.removeChild(iframe);
-      })();
     })
     // 事件 - 清空输出
     document.getElementById('clear-btn').addEventListener('click', function () {
