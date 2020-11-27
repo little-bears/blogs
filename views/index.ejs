@@ -64,7 +64,7 @@
     .name {
       font-size: 18px;
       color: #333;
-      margin: 10px 0;
+      margin: 15px 0 10px 0;
     }
 
     .user-info {
@@ -89,6 +89,8 @@
     .icon-img {
       width: 100%;
       height: 100%;
+      -webkit-filter: grayscale(0.3);
+      filter: grayscale(0.3);
     }
 
     .icon-item:nth-child(1):hover::after {
@@ -230,6 +232,9 @@
     .arc-tip {
       font-size: 14px;
       color: #666;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .get-more {
@@ -283,11 +288,17 @@
             <div class="arc-tips-group">
               <div class="arc-tip-item">
                 <img src="/assets/images/icon-arc-classify.png">
-                <p class="arc-tip"><%= data.classifyMap[item.classify] %></p>
+                <p class="arc-tip">
+                  <span>类别：</span>
+                  <span><%= data.classifyMap[item.classify] %></span>
+                </p>
               </div>
               <div class="arc-tip-item">
                 <img src="/assets/images/icon-clock.png">
-                <p class="arc-tip"><%= dateFormat(item.updatetime) %></p>
+                <p class="arc-tip">
+                  <span>更新时间：</span>
+                  <span><%= YMDFormat(item.updatetime) %></span>
+                </p>
               </div>
             </div>
           </div>
@@ -307,7 +318,7 @@
         <div class="header-box">
           <img src="/assets/images/header.jpg">
         </div>
-        <p class="name">熊刚</p>
+        <p class="name">（熊刚）</p>
         <div class="user-info">
           <p>职业：软件攻城狮</p>
           <p>现居：四川省-成都市</p>
@@ -329,7 +340,7 @@
         </div>
       </div>
       <div class="aside-box">
-        <p class="aside-title">我的技能</p>
+        <p class="aside-title">个人技能</p>
         <div id="rotate-box">
           <div class="out_div out_front">
             Vue
