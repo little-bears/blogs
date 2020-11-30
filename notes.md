@@ -27,19 +27,19 @@ if [ ! -d $tar_dir ];then
 fi
 
 
-# 删除之前的dump文件
+## 删除之前的dump文件
 sudo rm -rf $out_dir/*
-# 创建新的文件夹存放dump文件
+## 创建新的文件夹存放dump文件
 sudo mkdir -p $out_dir/$sysdate
-# 导出127.0.0.1机器上的blog库的所有表到$out_dir/$sysdate文件夹
+## 导出127.0.0.1机器上的blog库的所有表到$out_dir/$sysdate文件夹
 $dump -h 127.0.0.1 -d blog -o $out_dir/$sysdate
-# 压缩$out_dir/$sysdate到目标文件夹
+## 压缩$out_dir/$sysdate到目标文件夹
 sudo tar -zcvf $tar_dir/$tar_bak $out_dir/$sysdate
-# 删除指定期限钱的备份文件
+## 删除指定期限钱的备份文件
 sudo find $tar_dir/ -mtime +$days -delete
 
 echo "===数据库: blog 备份完成==="
-# 退出
+## 退出
 exit
 
 # 2、数据库恢复:
