@@ -78,6 +78,9 @@
     .arc-tip {
       font-size: 14px;
       color: #666;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .classify-active {
@@ -227,13 +230,15 @@
           <div class="arc-tip-item">
             <img src="/assets/images/icon-arc-classify.png">
             <p class="arc-tip">
-              <%= data.classifyMap[item.classify] %>
+              <span>类别：</span>
+              <span><%= data.classifyMap[item.classify] %></span>
             </p>
           </div>
           <div class="arc-tip-item">
             <img src="/assets/images/icon-clock.png">
             <p class="arc-tip">
-              <%= dateFormat(item.createtime) %>
+              <span>发布时间：</span>
+              <span><%= YMDFormat(item.createtime) %></span>
             </p>
           </div>
         </div>

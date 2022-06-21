@@ -4,6 +4,11 @@
     position: relative;
   }
 
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
   .snow-img {
     position: fixed;
     top: 0;
@@ -206,9 +211,21 @@
     text-decoration: none;
   }
 
-  .my-active {
+  .my-active p {
     color: #333333;
-    text-decoration: underline;
+    position: relative;
+  }
+
+  .my-active p::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 1px;
+    background: #333333;
+    position: absolute;
+    left: 50%;
+    bottom: -20%;
+    transform: translate(-50%, 0);
   }
 
   .stopAnimationBox {
@@ -261,16 +278,24 @@
   </div>
   <div class="nav-list col-sm-8">
     <div class="nav-item">
-      <a class="nav-a <%= url == 'index' ? 'my-active' : ''%>" href="/">首页</a>
+      <a class="nav-a <%= url == 'index' ? 'my-active' : ''%>" href="/">
+        <p>首页</p>
+      </a>
     </div>
     <div class="nav-item">
-      <a class="nav-a <%= url == 'blog' ? 'my-active' : ''%>" href="/blog">笔记</a>
+      <a class="nav-a <%= url == 'blog' ? 'my-active' : ''%>" href="/blog">
+        <p>笔记</p>
+      </a>
     </div>
     <div class="nav-item">
-      <a class="nav-a <%= url == 'code' ? 'my-active' : ''%>" href="/code">在线编码</a>
+      <a class="nav-a <%= url == 'code' ? 'my-active' : ''%>" href="/code">
+        <p>在线编码</p>
+      </a>
     </div>
     <div class="nav-item">
-      <a class="nav-a <%= url == 'resume' ? 'my-active' : ''%>" href="/resume">关于我</a>
+      <a class="nav-a <%= url == 'resume' ? 'my-active' : ''%>" href="/resume">
+        <p>关于我</p>
+      </a>
     </div>
   </div>
 </nav>
